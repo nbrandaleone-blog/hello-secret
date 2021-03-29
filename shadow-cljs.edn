@@ -1,0 +1,16 @@
+;; shadow-cljs configuration
+;; sample: https://github.com/thheller/shadow-cljs/blob/master/shadow-cljs.edn
+{:source-paths
+ ["src"]
+
+ :dependencies
+;   [[org.clojure/core.async "1.3.610"] ;; shadow-cljs overrides core.async version for compatibility
+  [[com.taoensso/timbre "5.1.2"]]
+
+ :builds
+ {:app
+  {:target :node-script
+        :compiler-options {:optimizations :simple}
+        :output-to "target/main.js"
+        :main server.main/main
+        :devtools {:after-load server.main/reload!}}}}

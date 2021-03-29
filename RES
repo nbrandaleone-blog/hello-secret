@@ -1,0 +1,63 @@
+$ curl https://hello-secret-hrhyswd3ya-uc.a.run.app/
+Hello, World!
+
+$ gcloud run deploy hello-secret --set-env-vars TARGET=GALAXY --image gcr.io/nicks-playground-3141/hello-secret:0.4 --platform managed
+Deploying container to Cloud Run service [hello-secret] in project [nicks-playground-3141] region [us-central1]
+✓ Deploying... Done.
+  ✓ Creating Revision...
+  ✓ Routing traffic...
+Done.
+Service [hello-secret] revision [hello-secret-00010-qit] has been deployed and is serving 100 percent of traffic.
+Service URL: https://hello-secret-hrhyswd3ya-uc.a.run.app
+
+curl https://hello-secret-hrhyswd3ya-uc.a.run.app/
+Hello, GALAXY!
+
+gcloud run deploy hello-secret --clear-env-vars --image gcr.io/nicks-playground-3141/hello-secret:0.4 --platform managed
+
+gcloud logging read \
+  "resource.type=cloud_run_revision AND\
+  resource.labels.service_name=hello-secret AND\
+  severity>=DEFAULT" \
+  --limit=10 --format=json
+
+gcloud beta logging tail "resource.type=cloud_run_revision AND \
+resource.labels.service_name=hello-secret AND \
+severity>=DEFAULT" \
+--format="default(timestamp,resource["labels"]["service_name"],textPayload)"
+
+# Create secret
+gcloud secrets create TARGET \
+    --replication-policy="automatic"
+
+echo -n "Universe" | \
+    gcloud secrets versions add TARGET  --data-file=-
+
+## Verify secret
+gcloud secrets versions access 1 --secret="TARGET"
+
+# Add IAM role to default Cloud Run service account
+$ gcloud iam roles describe roles/secretmanager.secretAccessor
+description: Allows accessing the payload of secrets.
+etag: AA==
+includedPermissions:
+- resourcemanager.projects.get
+- resourcemanager.projects.list
+- secretmanager.versions.access
+name: roles/secretmanager.secretAccessor
+stage: GA
+title: Secret Manager Secret Accessor
+
+gcloud iam service-accounts add-iam-policy-binding \
+  nicks-playground-3141 \
+  --member="serviceAccount:659824402950-compute@developer.gserviceaccount.com" \
+  --role="roles/secretmanager.secretAccessor"
+
+gcloud projects get-iam-policy nicks-playground-3141 \
+--flatten="bindings[].members" \
+--format='table(bindings.role)' \
+--filter="bindings.members:659824402950-compute@developer.gserviceaccount.com"
+
+# Restart service, and test
+curl https://hello-secret-hrhyswd3ya-uc.a.run.app
+Hello, Universe!
