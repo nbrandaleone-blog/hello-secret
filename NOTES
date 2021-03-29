@@ -10,8 +10,20 @@ npx shadow-cljs compile app
 npx shadow-cljs watch app
 node hello-secret.js
 
-### Connect to the REPL ???
-npx shadow-cljs cljs-repl app
+## Connect to the REPL
+1. Have 'shadow-cljs watch app' running
+2. Have a JS runtime connected, 'node target/main.js'
+3. Connect repl: 'npx shadow-cljs cljs-repl app'
+
+REPL commands:
+- (in-ns 'server.main)
+- (clojure.repl/dir server.main)
+- (keys (ns-publics 'foo))
+- (doc <fun>)
+- (load-file "filename")
+
+See: https://shadow-cljs.github.io/docs/UsersGuide.html#repl-troubleshooting
+See: https://clojurescript.org/reference/repl
 
 ## Compile release version of app
 npx shadow-cljs release app
@@ -37,6 +49,10 @@ gcloud builds submit --tag gcr.io/nicks-playground-3141/hello-secret
 # Deploy to Cloud Run
 gcloud run deploy <service-name> --image gcr.io/PROJECT-ID/helloworld --platform managed
 gcloud run deploy hello-secret --image gcr.io/nicks-playground-3141/hello-secret --platform managed
+
+# Cleaning up
+gcloud run services list
+gcloud run services delete hello-secret
 
 ## Set up credentials
 export GOOGLE_APPLICATION_CREDENTIALS=/Users/nbrand/gcp/service-accounts/nicks-playground-3141-ce55e71ee2d3.json

@@ -8,9 +8,16 @@
   [[com.taoensso/timbre "5.1.2"]]
 
  :builds
- {:app
-  {:target :node-script
+   {:app
+     {:target :node-script
         :compiler-options {:optimizations :simple}
         :output-to "target/main.js"
         :main server.main/main
-        :devtools {:after-load server.main/reload!}}}}
+        :devtools {:after-load server.main/reload!}
+        :release {:output-to "target/hello-secret.js"
+                  :compiler-options {:optimizations :simple}
+                  :main server.main/main
+                 }
+     }
+   }
+}

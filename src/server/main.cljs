@@ -98,7 +98,7 @@
 (defn start-server []
   (let [port (or (.-PORT (.-env js/process)) 3000)]
     (doto (new express)
-      (.get "/" (handler "Hello Clojuresript"))
+      (.get "/" (handler "Hello Clojurescript"))
       (.get "/secret" (handler (str "Hello, " @word "!")))
       (.get "/foo" (handler {:result "Nothing happens"}))
       (.get "/echo" (handler (fn [req _] {:method (.-method req) :url (.-url req)})))
