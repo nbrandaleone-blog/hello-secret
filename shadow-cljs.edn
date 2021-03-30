@@ -10,7 +10,7 @@
  :builds
    {:app
      {:target :node-script
-        :compiler-options {:optimizations :simple}
+        :compiler-options {:optimizations :none}
         :output-to "target/main.js"
         :main server.main/main
         :devtools {:after-load server.main/reload!}

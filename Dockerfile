@@ -47,6 +47,7 @@ FROM node:current-alpine
 WORKDIR /usr/src/app
 
 # Copy over build artifact and libraries
+COPY --from=0 /usr/src/app/target/hello-secret.js /usr/src/app/target/hello-secret.js 
 COPY . ./
 RUN npm install --only=production
 
