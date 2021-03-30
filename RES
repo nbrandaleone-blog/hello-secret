@@ -1,6 +1,12 @@
 $ curl https://hello-secret-hrhyswd3ya-uc.a.run.app/
 Hello, World!
 
+# Build (tags with latest)
+gcloud builds submit --tag gcr.io/nicks-playground-3141/hello-secret
+gcloud run deploy hello-secret --image gcr.io/nicks-playground-3141/hello-secret \
+--platform managed --allow-unauthenticated
+
+# Deploy
 $ gcloud run deploy hello-secret --set-env-vars TARGET=GALAXY --image gcr.io/nicks-playground-3141/hello-secret:0.4 --platform managed
 Deploying container to Cloud Run service [hello-secret] in project [nicks-playground-3141] region [us-central1]
 ✓ Deploying... Done.
@@ -61,3 +67,9 @@ gcloud projects get-iam-policy nicks-playground-3141 \
 # Restart service, and test
 curl https://hello-secret-hrhyswd3ya-uc.a.run.app
 Hello, Universe!
+
+# Build and Deploy (using cloudbuild.yaml directives)
+gcloud builds submit
+
+# Clean up
+gcloud run services delete hello-secret
